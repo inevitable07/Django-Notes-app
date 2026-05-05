@@ -63,14 +63,18 @@ MIDDLEWARE = [
 # ─────────────────────────────────────────────────────
 # CORS Configuration
 # ─────────────────────────────────────────────────────
-CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "CORS_ALLOWED_ORIGINS",
-        "http://localhost:3000,http://localhost:5173",
-    ).split(",")
-    if origin.strip()
-]
+if DEBUG:
+    # In development, allow any origin (file://, localhost on any port, etc.)
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        origin.strip()
+        for origin in os.getenv(
+            "CORS_ALLOWED_ORIGINS",
+            "http://localhost:3000,http://localhost:5173",
+        ).split(",")
+        if origin.strip()
+    ]
 
 # Allow credentials (cookies, auth headers) if needed by the frontend
 CORS_ALLOW_CREDENTIALS = True
