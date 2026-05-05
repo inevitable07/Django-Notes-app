@@ -8,7 +8,7 @@
 // ════════════════════════════════════════════════════
 // Configuration
 // ════════════════════════════════════════════════════
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = "/api";
 const ENDPOINTS = {
   notes: `${API_BASE}/notes/`,
   deleteNote: (id) => `${API_BASE}/notes/${id}/`,

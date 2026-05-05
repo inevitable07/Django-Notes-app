@@ -105,12 +105,20 @@ TEMPLATES = [
 ]
 
 # ─────────────────────────────────────────────────────
-# Database — SQLite for development
+# Database — MySQL
 # ─────────────────────────────────────────────────────
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+        "OPTIONS": {
+            "charset": "utf8mb4",
+            "connect_timeout": 10,
+        }
     }
 }
 
@@ -135,7 +143,8 @@ USE_TZ = True
 # ─────────────────────────────────────────────────────
 # Static files
 # ─────────────────────────────────────────────────────
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # ─────────────────────────────────────────────────────
 # Default primary key field type
@@ -151,4 +160,20 @@ REST_FRAMEWORK = {
     ],
     # Uncomment for browsable API during development:
     # "rest_framework.renderers.BrowsableAPIRenderer",
+}
+
+# ─────────────────────────────────────────────────────
+# LOGGING
+# ─────────────────────────────────────────────────────
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
 }
