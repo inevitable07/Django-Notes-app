@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A modern, dark-themed notes application for capturing thoughts quickly." />
+  <title>My Notes</title>
+
+  <!-- Google Fonts — Inter for clean modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ─── Header ─────────────────────────────────── -->
+  <header class="app-header" id="app-header">
+    <div class="header-glow"></div>
+    <h1 class="header-title">
+      <span class="header-icon">📝</span> My Notes
+    </h1>
+    <p class="header-subtitle">Capture your thoughts</p>
+  </header>
+
+  <!-- ─── Main Content ───────────────────────────── -->
+  <main class="app-container" id="app-container">
+
+    <!-- Empty state (shown when no notes exist) -->
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">🗒️</div>
+      <p class="empty-title">No notes yet</p>
+      <p class="empty-desc">Tap the <span class="accent">+</span> button to create your first note.</p>
+    </div>
+
+    <!-- Notes list -->
+    <div class="notes-list" id="notes-list"></div>
+
+    <!-- Loading spinner -->
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+    </div>
+
+  </main>
+
+  <!-- ─── Floating Action Button ─────────────────── -->
+  <button class="fab" id="fab-add" aria-label="Add new note" title="Add note">
+    <span class="fab-icon">+</span>
+  </button>
+
+  <!-- ─── Modal Overlay ──────────────────────────── -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal" role="dialog" aria-labelledby="modal-heading">
+      <div class="modal-header">
+        <h2 id="modal-heading" class="modal-title">New Note</h2>
+        <button class="modal-close" id="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form class="modal-form" id="note-form" autocomplete="off">
+        <div class="form-group">
+          <label for="note-title" class="form-label">Title</label>
+          <input
+            type="text"
+            id="note-title"
+            class="form-input"
+            placeholder="Give your note a title…"
+            maxlength="100"
+            required
+          />
+          <span class="char-count" id="title-count">0 / 100</span>
+        </div>
+
+        <div class="form-group">
+          <label for="note-content" class="form-label">Content</label>
+          <textarea
+            id="note-content"
+            class="form-input form-textarea"
+            placeholder="What's on your mind?"
+            rows="5"
+            required
+          ></textarea>
+        </div>
+
+        <p class="form-error" id="form-error"></p>
+
+        <button type="submit" class="btn-save" id="btn-save">
+          <span class="btn-text">Save Note</span>
+          <span class="btn-loader" id="btn-loader"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ─── Toast notification ─────────────────────── -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
