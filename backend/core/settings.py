@@ -163,8 +163,23 @@ REST_FRAMEWORK = {
 }
 
 # ─────────────────────────────────────────────────────
-# LOGGING
+# Clerk Authentication
 # ─────────────────────────────────────────────────────
+CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY")
+
+if not CLERK_SECRET_KEY and not DEBUG:
+    raise ValueError(
+        "CLERK_SECRET_KEY environment variable is required in production. "
+        "Get it from https://dashboard.clerk.com/apps/[app]/api-keys"
+    )
+
+if not CLERK_SECRET_KEY and DEBUG:
+    import warnings
+    warnings.warn(
+        "CLERK_SECRET_KEY not set. Authentication will fail. "
+        "Set CLERK_SECRET_KEY in .env file.",
+        RuntimeWarning
+    )
 
 LOGGING = {
     "version": 1,

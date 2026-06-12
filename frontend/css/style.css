@@ -735,6 +735,165 @@ body::before {
 
 
 /* ═══════════════════════════════════════════════════
+   AUTHENTICATION
+   ═══════════════════════════════════════════════════ */
+.auth-container {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  padding: var(--space-md);
+  overflow-y: auto;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-modal);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-modal);
+  text-align: center;
+  animation: auth-entrance 0.5s var(--ease-out);
+}
+
+@keyframes auth-entrance {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.auth-title {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.auth-subtitle {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+  line-height: 1.5;
+}
+
+#clerk-sign-in {
+  display: flex;
+  justify-content: center;
+}
+
+/* Clerk component styling */
+.cl-rootBox {
+  width: 100% !important;
+}
+
+.cl-card {
+  background: var(--bg-modal) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+
+.cl-headerTitle {
+  color: var(--text-primary) !important;
+}
+
+.cl-form {
+  background: transparent !important;
+}
+
+.cl-formFieldInput {
+  background: var(--bg-input) !important;
+  border-color: var(--border-input) !important;
+  color: var(--text-primary) !important;
+}
+
+.cl-formFieldInput:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-subtle) !important;
+}
+
+.cl-button {
+  background: linear-gradient(135deg, var(--accent), #e05a3a) !important;
+  color: #fff !important;
+}
+
+.cl-button:hover {
+  filter: brightness(1.1) !important;
+}
+
+/* User header info */
+.user-info {
+  position: absolute;
+  top: var(--space-lg);
+  right: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  animation: slide-down 0.4s var(--ease-out);
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding-right: var(--space-sm);
+}
+
+.user-name {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.btn-logout {
+  padding: var(--space-xs) var(--space-sm);
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--danger);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--duration) ease,
+    border-color var(--duration) ease;
+}
+
+.btn-logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--danger);
+}
+
+.btn-logout:active {
+  transform: scale(0.95);
+}
+
+
+/* ═══════════════════════════════════════════════════
    SCROLLBAR (Webkit)
    ═══════════════════════════════════════════════════ */
 ::-webkit-scrollbar {

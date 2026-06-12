@@ -15,8 +15,8 @@ class NoteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Note
-        fields = ["id", "title", "content", "created_at"]
-        read_only_fields = ["id", "created_at"]
+        fields = ["id", "user_clerk_id", "title", "content", "created_at"]
+        read_only_fields = ["id", "user_clerk_id", "created_at"]
 
     # ── Extra validation ──────────────────────────────
 

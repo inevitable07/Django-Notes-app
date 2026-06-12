@@ -49,8 +49,14 @@ let toastTimer = null;
  * @returns {Promise<Array>} Array of note objects.
  */
 async function fetchNotes() {
-  const res = await fetch(ENDPOINTS.notes);
-  if (!res.ok) throw new Error(`Failed to fetch notes (${res.status})`);
+  const res = await authenticatedFetch(ENDPOINTS.notes);
+  if (!res.ok) {
+    if (res.status === 401) {
+      redirectToSignIn();
+      throw new Error("Unauthorized");
+    }
+    throw new Error(`Failed to fetch notes (${res.status})`);
+  }
   return res.json();
 }
 
@@ -61,7 +67,7 @@ async function fetchNotes() {
  * @returns {Promise<Object>} Created note object.
  */
 async function createNote(title, content) {
-  const res = await fetch(ENDPOINTS.notes, {
+  const res = await authenticatedFetch(ENDPOINTS.notes, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title, content }),
@@ -70,7 +76,10 @@ async function createNote(title, content) {
   const data = await res.json();
 
   if (!res.ok) {
-    // Build a readable error from DRF validation errors
+    if (res.status === 401) {
+      redirectToSignIn();
+      throw new Error("Unauthorized");
+    }
     const messages = Object.values(data).flat().join(", ");
     throw new Error(messages || "Failed to create note");
   }
@@ -83,8 +92,12 @@ async function createNote(title, content) {
  * @param {number} id
  */
 async function removeNote(id) {
-  const res = await fetch(ENDPOINTS.deleteNote(id), { method: "DELETE" });
+  const res = await authenticatedFetch(ENDPOINTS.deleteNote(id), { method: "DELETE" });
   if (!res.ok && res.status !== 204) {
+    if (res.status === 401) {
+      redirectToSignIn();
+      throw new Error("Unauthorized");
+    }
     throw new Error(`Failed to delete note (${res.status})`);
   }
 }
@@ -177,6 +190,11 @@ function toggleEmptyState(count) {
  * Load all notes and render them.
  */
 async function loadNotes() {
+  if (!isUserSignedIn()) {
+    renderAuthPage();
+    return;
+  }
+
   loader.classList.add("visible");
   notesList.innerHTML = "";
   emptyState.classList.remove("visible");
@@ -368,4 +386,20 @@ titleInput.addEventListener("input", updateTitleCount);
 // Initialization
 // ════════════════════════════════════════════════════
 
-document.addEventListener("DOMContentLoaded", loadNotes);
+async function initializeApp() {
+  // Initialize Clerk first
+  await initializeClerk();
+
+  // Set up auth state listener
+  setupAuthStateListener();
+
+  // Check if user is authenticated
+  if (isUserSignedIn()) {
+    updateUserHeader();
+    loadNotes();
+  } else {
+    renderAuthPage();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initializeApp);

@@ -13,19 +13,23 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from . import services
+from .auth import require_auth
 
 logger = logging.getLogger(__name__)
 
 
 @api_view(["GET", "POST"])
+@require_auth
 def notes_list_create(request: Request) -> Response:
     """
-    GET  /api/notes/  → List all notes (latest first).
-    POST /api/notes/  → Create a new note.
+    GET  /api/notes/  → List all notes for authenticated user (latest first).
+    POST /api/notes/  → Create a new note for authenticated user.
     """
+    user_clerk_id = request.user_clerk_id
+
     if request.method == "GET":
         try:
-            data = services.get_all_notes()
+            data = services.get_all_notes(user_clerk_id)
             return Response(data, status=status.HTTP_200_OK)
         except Exception:
             logger.exception("Failed to fetch notes")
@@ -36,7 +40,7 @@ def notes_list_create(request: Request) -> Response:
 
     # POST
     try:
-        note_data, errors = services.create_note(request.data)
+        note_data, errors = services.create_note(request.data, user_clerk_id)
         if errors:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(note_data, status=status.HTTP_201_CREATED)
@@ -49,18 +53,22 @@ def notes_list_create(request: Request) -> Response:
 
 
 @api_view(["DELETE"])
+@require_auth
 def notes_delete(request: Request, pk: int) -> Response:
     """
-    DELETE /api/notes/{id}/ → Delete a note by primary key.
+    DELETE /api/notes/{id}/ → Delete a note by primary key (if it belongs to user).
     """
+    user_clerk_id = request.user_clerk_id
+
     try:
-        services.delete_note(pk)
+        services.delete_note(pk, user_clerk_id)
         return Response(status=status.HTTP_204_NO_CONTENT)
     except Exception as exc:
-        # get_object_or_404 raises Http404 which DRF handles automatically
-        # before this point, so if we land here it's a genuine server error.
         if "Http404" in type(exc).__name__ or "404" in str(exc):
-            raise  # Let DRF's exception handler return 404
+            return Response(
+                {"error": "Note not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
         logger.exception("Failed to delete note %s", pk)
         return Response(
             {"error": "Unable to delete note. Please try again later."},
